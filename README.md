@@ -223,16 +223,6 @@ npm run preview
 # Linting
 npm run lint
 ```
-
----
-
-## 👥 Equipo
-
-| Rol | Nombre | GitHub |
-|---|---|---|
-| Frontend | Gcota1694 | [@Gcota1694](https://github.com/Gcota1694) |
-| Backend  | *(tu compañero)* | @usuario_compañero |
-
 ---
 
 ## 📄 Licencia
