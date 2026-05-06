@@ -112,10 +112,9 @@ const features = [
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 28px;
 }
 
-/* ── Hero ── */
 .hero         { text-align: center; padding: 8px 0; }
 .hero__tag    {
   display: inline-block;
@@ -140,7 +139,6 @@ const features = [
 }
 .accent { color: var(--brand); }
 
-/* ── Card base ── */
 .card {
   background: var(--bg-surface);
   border: 1px solid var(--border);
@@ -150,18 +148,24 @@ const features = [
 }
 .card:hover { border-color: rgba(0,212,170,0.15); }
 
-/* ── Progress card ── */
 .progress-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
 }
-.progress-info { display: flex; align-items: center; gap: 12px; }
-.file-icon  { font-size: 2rem; }
-.file-name  { font-weight: 600; font-size: 0.95rem; }
+.progress-info { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+.file-icon  { font-size: 1.8rem; flex-shrink: 0; }
+.file-name  {
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 260px;
+}
 .file-size  { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
 
 .status-badge {
@@ -170,6 +174,8 @@ const features = [
   padding: 4px 12px;
   border-radius: 20px;
   letter-spacing: 0.3px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .status--active   { background: var(--brand-glow);            color: var(--brand); }
 .status--paused   { background: rgba(245,166,35,0.12);         color: #f5a623; }
@@ -201,12 +207,13 @@ const features = [
 .chunks-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 3px;
   margin-bottom: 20px;
 }
 .chunk-block {
-  width: 18px; height: 18px;
-  border-radius: 4px;
+  width: clamp(12px, 2vw, 18px);
+  height: clamp(12px, 2vw, 18px);
+  border-radius: 3px;
   transition: background 0.3s;
 }
 .chunk--pending   { background: rgba(255,255,255,0.06); }
@@ -216,7 +223,7 @@ const features = [
 
 @keyframes pulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
 
-.controls { display: flex; gap: 12px; align-items: center; }
+.controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 
 .btn {
   padding: 9px 22px;
@@ -227,27 +234,23 @@ const features = [
   font-weight: 600;
   transition: all 0.2s;
 }
-.btn--primary {
-  background: var(--brand);
-  color: #080d14;
-}
+.btn--primary { background: var(--brand); color: #080d14; }
 .btn--primary:hover  { background: var(--brand-dim); box-shadow: var(--shadow-brand); }
 .btn--secondary      { background: var(--bg-elevated); color: var(--text); border: 1px solid var(--border); }
 .btn--secondary:hover { border-color: var(--border-hover); }
 
 .done-msg { color: var(--brand); font-weight: 600; font-size: 0.95rem; }
 
-/* ── Features ── */
 .features {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
 }
 .feature-card {
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 24px;
+  padding: 22px;
   transition: all 0.2s;
 }
 .feature-card:hover {
@@ -255,12 +258,14 @@ const features = [
   box-shadow: var(--shadow-brand);
   transform: translateY(-2px);
 }
-.feature-icon { font-size: 1.8rem; display: block; margin-bottom: 12px; }
-.feature-card h3 { font-size: 0.95rem; margin-bottom: 6px; color: var(--text); }
+.feature-icon { font-size: 1.6rem; display: block; margin-bottom: 10px; }
+.feature-card h3 { font-size: 0.92rem; margin-bottom: 6px; }
 .feature-card p  { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
 
-@media (max-width: 600px) {
-  .card        { padding: 20px 16px; }
-  .chunk-block { width: 14px; height: 14px; }
+@media (max-width: 480px) {
+  .card         { padding: 16px 14px; }
+  .file-name    { max-width: 160px; }
+  .features     { grid-template-columns: 1fr; }
+  .progress-meta { flex-direction: column; gap: 2px; }
 }
 </style>

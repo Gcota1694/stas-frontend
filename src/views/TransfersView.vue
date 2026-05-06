@@ -324,4 +324,15 @@ function labelStatus(s) {
   .transfer-row { flex-direction: column; align-items: flex-start; }
   .tr-center    { width: 100%; }
 }
+@media (max-width: 480px) {
+  .stats-row        { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat-card        { padding: 14px; }
+  .stat-num         { font-size: 1.5rem; }
+  .transfer-row     { padding: 14px 12px; }
+  .tr-name          { font-size: 0.82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+  .page-header      { flex-direction: column; }
+  .header-actions   { width: 100%; justify-content: space-between; }
+  .log-body         { max-height: 160px; font-size: 0.72rem; }
+  .card             { padding: 16px 14px; }
+}
 </style>

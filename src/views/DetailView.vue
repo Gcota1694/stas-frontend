@@ -364,4 +364,18 @@ function labelStatus(s) {
   .section-header { flex-direction: column; align-items: flex-start; }
   .chunk-block    { width: 16px; height: 16px; }
 }
+@media (max-width: 480px) {
+  .stats-row        { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat-card        { padding: 14px; }
+  .stat-num         { font-size: 1.5rem; }
+  .progress-pct     { font-size: 1.6rem; }
+  .file-name        { font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+  .chunk-block      { width: 14px; height: 14px; }
+  .filter-row       { gap: 4px; }
+  .filter-btn       { padding: 3px 8px; font-size: 0.72rem; }
+  .chunk-table th,
+  .chunk-table td   { padding: 8px 10px; font-size: 0.78rem; }
+  .card             { padding: 16px 14px; }
+  .section-header   { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
 </style>

@@ -6,24 +6,47 @@
         <span class="navbar__title">STAS</span>
         <span class="navbar__sub">Stream Transfer</span>
       </div>
+
+      <!-- Desktop links -->
       <nav class="navbar__links">
         <RouterLink to="/" class="nav-link">Inicio</RouterLink>
         <RouterLink to="/transfers" class="nav-link">Transferencias</RouterLink>
       </nav>
+
+      <!-- Botón hamburguesa móvil -->
+      <button class="hamburger" @click="menuOpen = !menuOpen" :class="{ open: menuOpen }">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </header>
+
+    <!-- Menú móvil desplegable -->
+    <Transition name="menu">
+      <div v-if="menuOpen" class="mobile-menu">
+        <RouterLink to="/" class="mobile-link" @click="menuOpen = false">⚡ Inicio</RouterLink>
+        <RouterLink to="/transfers" class="mobile-link" @click="menuOpen = false">📋 Transferencias</RouterLink>
+      </div>
+    </Transition>
+
     <main class="page">
       <RouterView />
     </main>
+
     <footer class="footer">
       <span>STAS © 2026 — Transferencia segura por bloques</span>
     </footer>
+
     <ToastContainer />
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import ToastContainer from './components/ToastContainer.vue'
+
+const menuOpen = ref(false)
 </script>
 
 <style>
@@ -64,7 +87,7 @@ body {
   background-size: 28px 28px;
 }
 
-h1 { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 700; letter-spacing: -0.3px; }
+h1 { font-size: clamp(1.3rem, 3vw, 2rem); font-weight: 700; letter-spacing: -0.3px; }
 h2 { font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 600; }
 
 ::-webkit-scrollbar       { width: 5px; height: 5px; }
@@ -77,13 +100,14 @@ h2 { font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 600; }
 <style scoped>
 .layout { display: flex; flex-direction: column; min-height: 100vh; }
 
+/* ── Navbar ── */
 .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 36px;
   height: 62px;
-  background: rgba(8,13,20,0.85);
+  background: rgba(8,13,20,0.92);
   border-bottom: 1px solid var(--border);
   backdrop-filter: blur(16px);
   position: sticky;
@@ -93,7 +117,6 @@ h2 { font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 600; }
 
 .navbar__brand { display: flex; align-items: center; gap: 10px; }
 .navbar__icon  { font-size: 1.3rem; }
-
 .navbar__title {
   font-size: 1.15rem;
   font-weight: 800;
@@ -101,7 +124,6 @@ h2 { font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 600; }
   letter-spacing: 3px;
   text-shadow: 0 0 20px rgba(0,212,170,0.4);
 }
-
 .navbar__sub {
   font-size: 0.72rem;
   color: var(--text-muted);
@@ -112,6 +134,7 @@ h2 { font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 600; }
   letter-spacing: 1px;
 }
 
+/* Desktop links */
 .navbar__links { display: flex; gap: 4px; }
 
 .nav-link {
@@ -135,8 +158,70 @@ h2 { font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 600; }
   border-color: rgba(0,212,170,0.2);
 }
 
-.page   { flex: 1; padding: 44px 28px; }
+/* ── Hamburguesa ── */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+}
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--text-muted);
+  border-radius: 2px;
+  transition: all 0.25s;
+  transform-origin: center;
+}
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); background: var(--brand); }
+.hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background: var(--brand); }
 
+/* ── Menú móvil ── */
+.mobile-menu {
+  display: flex;
+  flex-direction: column;
+  background: rgba(8,13,20,0.97);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  position: sticky;
+  top: 62px;
+  z-index: 99;
+  padding: 8px 16px 16px;
+  gap: 4px;
+}
+.mobile-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+.mobile-link:hover,
+.mobile-link.router-link-active {
+  color: var(--brand);
+  background: var(--brand-glow);
+  border-color: rgba(0,212,170,0.2);
+}
+
+/* Animación menú */
+.menu-enter-active, .menu-leave-active { transition: all 0.25s ease; }
+.menu-enter-from  { opacity: 0; transform: translateY(-12px); }
+.menu-leave-to    { opacity: 0; transform: translateY(-12px); }
+
+/* ── Page ── */
+.page { flex: 1; padding: 44px 28px; }
+
+/* ── Footer ── */
 .footer {
   text-align: center;
   padding: 18px;
@@ -146,9 +231,12 @@ h2 { font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 600; }
   letter-spacing: 0.3px;
 }
 
-@media (max-width: 600px) {
-  .navbar      { padding: 0 18px; }
-  .navbar__sub { display: none; }
-  .page        { padding: 24px 16px; }
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .navbar        { padding: 0 18px; }
+  .navbar__sub   { display: none; }
+  .navbar__links { display: none; }
+  .hamburger     { display: flex; }
+  .page          { padding: 24px 14px; }
 }
 </style>
