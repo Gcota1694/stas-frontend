@@ -132,36 +132,35 @@ stas-frontend/
 │   └── favicon.ico
 ├── src/
 │   ├── assets/
-│   │   └── main.css              # Estilos globales
+│   │   └── main.css
 │   ├── components/
-│   │   ├── FileDropzone.vue      # Área de drag & drop
-│   │   ├── ChunkProgress.vue     # Barra visual de chunks
-│   │   ├── TransferCard.vue      # Tarjeta de transferencia
-│   │   ├── StatusBadge.vue       # Badge de estado
-│   │   └── ToastContainer.vue    # Notificaciones toast
+│   │   ├── FileDropzone.vue
+│   │   ├── ChunkProgress.vue
+│   │   ├── TransferCard.vue
+│   │   ├── StatusBadge.vue
+│   │   └── ToastContainer.vue
 │   ├── views/
-│   │   ├── HomeView.vue          # Pantalla principal / upload
-│   │   ├── TransfersView.vue     # Lista de transferencias
-│   │   └── DetailView.vue        # Detalle de una transferencia
+│   │   ├── HomeView.vue
+│   │   ├── TransfersView.vue
+│   │   └── DetailView.vue
 │   ├── stores/
-│   │   ├── transferStore.js      # Estado de chunks y progreso
-│   │   ├── wsStore.js            # WebSocket reactivo
-│   │   └── notifyStore.js        # Notificaciones
+│   │   ├── transferStore.js
+│   │   ├── wsStore.js
+│   │   └── notifyStore.js
 │   ├── services/
-│   │   ├── api.js                # Axios + endpoints HTTP
-│   │   ├── chunker.js            # Lógica de fragmentación
-│   │   └── websocket.js          # Clase WebSocket con reconexión
+│   │   ├── api.js
+│   │   ├── chunker.js
+│   │   └── websocket.js
 │   ├── router/
-│   │   └── index.js              # Rutas de la aplicación
-│   ├── App.vue                   # Componente raíz
-│   └── main.js                   # Entry point
-├── .env.example                  # Variables de entorno de ejemplo
+│   │   └── index.js
+│   ├── App.vue
+│   └── main.js
+├── .env.example
 ├── .gitignore
 ├── index.html
 ├── package.json
 ├── vite.config.js
 └── README.md
-
 ---
 
 ## 🔧 Variables de entorno
