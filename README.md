@@ -127,40 +127,30 @@ Abre [http://localhost:5173](http://localhost:5173) en tu navegador.
 ---
 
 ## 📁 Estructura del proyecto
-stas-frontend/
-├── public/
-│   └── favicon.ico
-├── src/
-│   ├── assets/
-│   │   └── main.css
-│   ├── components/
-│   │   ├── FileDropzone.vue
-│   │   ├── ChunkProgress.vue
-│   │   ├── TransferCard.vue
-│   │   ├── StatusBadge.vue
-│   │   └── ToastContainer.vue
-│   ├── views/
-│   │   ├── HomeView.vue
-│   │   ├── TransfersView.vue
-│   │   └── DetailView.vue
-│   ├── stores/
-│   │   ├── transferStore.js
-│   │   ├── wsStore.js
-│   │   └── notifyStore.js
-│   ├── services/
-│   │   ├── api.js
-│   │   ├── chunker.js
-│   │   └── websocket.js
-│   ├── router/
-│   │   └── index.js
-│   ├── App.vue
-│   └── main.js
-├── .env.example
-├── .gitignore
-├── index.html
-├── package.json
-├── vite.config.js
-└── README.md
+
+| Carpeta / Archivo | Descripción |
+|---|---|
+| `public/favicon.ico` | Ícono de la app |
+| `src/assets/main.css` | Estilos globales y variables CSS |
+| `src/components/FileDropzone.vue` | Área de drag & drop |
+| `src/components/ChunkProgress.vue` | Barra visual de chunks |
+| `src/components/TransferCard.vue` | Tarjeta de transferencia |
+| `src/components/StatusBadge.vue` | Badge de estado |
+| `src/components/ToastContainer.vue` | Notificaciones toast |
+| `src/views/HomeView.vue` | Pantalla principal / upload |
+| `src/views/TransfersView.vue` | Lista de transferencias |
+| `src/views/DetailView.vue` | Detalle de una transferencia |
+| `src/stores/transferStore.js` | Estado de chunks y progreso |
+| `src/stores/wsStore.js` | WebSocket reactivo |
+| `src/stores/notifyStore.js` | Notificaciones |
+| `src/services/api.js` | Axios + endpoints HTTP |
+| `src/services/chunker.js` | Lógica de fragmentación |
+| `src/services/websocket.js` | WebSocket con reconexión |
+| `src/router/index.js` | Rutas de la aplicación |
+| `src/App.vue` | Componente raíz |
+| `src/main.js` | Entry point |
+| `.env.example` | Variables de entorno de ejemplo |
+| `vite.config.js` | Configuración de Vite |
 ---
 
 ## 🔧 Variables de entorno
