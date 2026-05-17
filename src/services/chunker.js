@@ -1,4 +1,4 @@
-const CHUNK_SIZE = 1024 * 1024 * 2 // 2 MB por chunk
+const CHUNK_SIZE = 1024 * 1024 // 1 MB por chunk
 
 export function splitFile(file) {
   const chunks = []
@@ -23,6 +23,7 @@ export function splitFile(file) {
 }
 
 export function calcProgress(chunks) {
+  if (!chunks || chunks.length === 0) return 0
   const done = chunks.filter(c => c.status === 'done').length
   return Math.round((done / chunks.length) * 100)
 }
