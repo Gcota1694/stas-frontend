@@ -41,5 +41,23 @@ export default {
 
   getTransfers() {
     return http.get('/api/v1/files') // Ajustado al prefijo por si lo implementas luego
+  },
+
+  // Obtener la lista de archivos disponibles en la carpeta de uploads
+  getAvailableFiles() {
+    return http.get('/api/v1/files') // Asegúrate de que este endpoint en tu back liste los nombres
+  },
+
+  // Obtener la info del archivo (especialmente total_chunks)
+  getFileInfo(fileId) {
+    return http.get(`/api/v1/files/${encodeURIComponent(fileId)}/info`)
+  },
+
+  // Descargar un flujo de streaming desde un chunk específico
+  downloadFileStream(fileId, startChunk = 0) {
+    return http.get(`/api/v1/files/${encodeURIComponent(fileId)}`, {
+      params: { start_chunk: startChunk },
+      responseType: 'blob' // Clave para manejar el flujo binario en el Front
+    })
   }
 }
