@@ -1,6 +1,6 @@
 <template>
   <div class="downloads-container">
-    <h2>Sistema de Transferencia de Archivos por Stream (STAS)</h2>
+    <h1>Panel de Descargas</h1>
     <h3>📂 Archivos Disponibles para Descarga</h3>
 
     <div class="files-table-container">
@@ -114,34 +114,36 @@ function isDownloading(fileName) {
 .downloads-container {
   padding: 30px;
   max-width: 1000px;
-  margin: 0 auto;
+  margin: 20px auto;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #1a1a1a; /* Fondo oscuro principal */
-  color: #e0e0e0; /* Texto claro */
-  border-radius: 12px;
+  /* 🎨 Color de fondo principal heredado del Home */
+  background-color: none; 
+  color: var(--text, #e0e0e0);
+  border: 1px solid var(--border);
+  border-radius: var(--radius, 12px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  margin-top: 20px;
 }
 
 h2 {
-  color: #ffffff;
-  border-bottom: 2px solid #333;
+  color: var(--text, #ffffff);
+  border-bottom: 2px solid var(--border, #333);
   padding-bottom: 10px;
   margin-bottom: 5px;
 }
 
 h3 {
-  color: #3498db; /* Azul tecnológico para subtítulos */
+  /* Usamos el verde/cian neón de tu marca */
+  color: var(--brand, #00d4aa); 
   margin-top: 20px;
   margin-bottom: 15px;
   font-weight: 500;
 }
 
-/* 📊 TABLA DE ARCHIVOS EN MODO OSCURO */
+/* 📊 TABLA DE ARCHIVOS (Con los contenedores estilo Home) */
 .files-table-container {
-  background: #242424; /* Fondo de tarjetas/paneles */
-  border: 1px solid #3d3d3d;
-  border-radius: 8px;
+  background: var(--bg-surface, #242424);
+  border: 1px solid var(--border, #3d3d3d);
+  border-radius: var(--radius, 8px);
   padding: 20px;
   margin-bottom: 30px;
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
@@ -153,28 +155,28 @@ h3 {
 }
 
 .files-table th {
-  background-color: #2d2d2d;
-  color: #3498db;
+  background-color: rgba(255, 255, 255, 0.02);
+  color: var(--brand, #00d4aa);
   padding: 14px 12px;
   font-weight: 600;
   text-align: left;
-  border-bottom: 2px solid #3d3d3d;
+  border-bottom: 2px solid var(--border, #3d3d3d);
 }
 
 .files-table td {
   padding: 14px 12px;
   text-align: left;
-  border-bottom: 1px solid #333;
-  color: #cccccc;
+  border-bottom: 1px solid var(--border, #333);
+  color: var(--text-muted, #cccccc);
 }
 
 .files-table tbody tr:hover {
-  background-color: #2d2d2d; /* Efecto hover sutil */
+  background-color: rgba(255, 255, 255, 0.02);
 }
 
 .no-files {
   text-align: center;
-  color: #888888;
+  color: var(--text-muted, #888888);
   font-style: italic;
   padding: 20px !important;
 }
@@ -185,12 +187,16 @@ h3 {
 }
 
 .download-card {
-  background: #242424;
-  border: 1px solid #3d3d3d;
-  border-radius: 8px;
+  background: var(--bg-surface, #242424);
+  border: 1px solid var(--border, #3d3d3d);
+  border-radius: var(--radius, 8px);
   padding: 25px;
   margin-bottom: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  transition: border-color 0.2s;
+}
+.download-card:hover {
+  border-color: rgba(0, 212, 170, 0.15);
 }
 
 .download-header {
@@ -202,14 +208,14 @@ h3 {
 }
 
 .file-name {
-  color: #ffffff;
+  color: var(--text, #ffffff);
   font-weight: 500;
 }
 
-/* BARRA DE PROGRESO INDUSTRIAL */
+/* BARRA DE PROGRESO INDUSTRIAL CON EL GRADIENTE DE HOME */
 .progress-container {
-  background: #1a1a1a;
-  border: 1px solid #333;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border, #333);
   border-radius: 6px;
   height: 24px;
   position: relative;
@@ -218,10 +224,11 @@ h3 {
 }
 
 .progress-bar {
-  background: linear-gradient(90deg, #2980b9, #3498db);
+  /* Gradiente exacto de tu barra en Home */
+  background: linear-gradient(90deg, var(--brand-dim), var(--brand));
   height: 100%;
   transition: width 0.1s ease;
-  box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
+  box-shadow: 0 0 10px rgba(0, 212, 170, 0.4);
 }
 
 .progress-text {
@@ -241,10 +248,10 @@ h3 {
   flex-wrap: wrap;
   gap: 5px;
   margin-bottom: 20px;
-  background: #1a1a1a;
+  background: rgba(0, 0, 0, 0.2);
   padding: 12px;
   border-radius: 6px;
-  border: 1px solid #333;
+  border: 1px solid var(--border, #333);
   box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
 }
 
@@ -252,36 +259,39 @@ h3 {
   width: 16px;
   height: 16px;
   border-radius: 3px;
-  background-color: #333333; /* pending - Gris oscuro terminal */
-  border: 1px solid #222;
+  background-color: rgba(255, 255, 255, 0.06); /* pending */
+  border: 1px solid rgba(0, 0, 0, 0.2);
   transition: all 0.15s ease;
 }
 
 .chunk-box.uploading {
-  background-color: #f1c40f; /* downloading - Amarillo */
-  box-shadow: 0 0 8px rgba(241, 196, 15, 0.6);
-  animation: pulse 1s infinite alternate;
+  background-color: var(--brand, #00d4aa);
+  opacity: 0.7;
+  box-shadow: 0 0 8px var(--brand);
+  animation: pulse 0.8s infinite alternate;
 }
 
 .chunk-box.done {
-  background-color: #2ecc71; /* done - Verde Neón */
-  box-shadow: 0 0 6px rgba(46, 204, 113, 0.4);
+  background-color: var(--brand, #00d4aa); /* done - Verde Neón del Home */
+  box-shadow: 0 0 6px rgba(0, 212, 170, 0.3);
 }
 
 .chunk-box.error {
-  background-color: #e74c3c; /* error - Rojo */
-  box-shadow: 0 0 8px rgba(231, 76, 60, 0.6);
+  background-color: var(--danger, #ff5c7a); /* error */
+  box-shadow: 0 0 8px var(--danger);
 }
 
-/* 🛑 BOTONES Y ACCIONES */
+/* 🛑 BOTONES Y ACCIONES STYLING HOME */
 button {
   font-weight: 600;
+  border-radius: var(--radius-sm, 4px);
+  font-size: 0.88rem;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 button:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 button:active {
@@ -289,57 +299,59 @@ button:active {
 }
 
 .btn-download {
-  background: #2ecc71;
-  color: #1a1a1a;
+  background: var(--brand, #00d4aa);
+  color: #080d14;
   border: none;
   padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
 .btn-download:disabled {
-  background: #333333;
-  color: #666666;
-  border: 1px solid #444;
+  background: var(--bg-elevated, #333333);
+  color: var(--text-muted, #666666);
+  border: 1px solid var(--border);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
 
 .btn-pause {
-  background: #e67e22;
-  color: white;
-  border: none;
+  background: var(--bg-elevated);
+  color: #f5a623;
+  border: 1px solid rgba(245, 166, 35, 0.25);
   padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
+}
+.btn-pause:hover {
+  background: rgba(245, 166, 35, 0.08);
 }
 
 .btn-resume {
-  background: #3498db;
-  color: white;
-  border: none;
+  background: var(--bg-elevated);
+  color: var(--brand);
+  border: 1px solid rgba(0, 212, 170, 0.25);
   padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
+}
+.btn-resume:hover {
+  background: var(--brand-glow);
+  box-shadow: var(--shadow-brand);
 }
 
-/* BADGES DE ESTADO */
+/* BADGES DE ESTADO ESTILO PÍLDORA */
 .status-badge {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: bold;
-  letter-spacing: 0.5px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
 }
-.status-badge.initializing { background: #7f8c8d; color: white; }
-.status-badge.active { background: #3498db; color: white; }
-.status-badge.paused { background: #e67e22; color: white; }
-.status-badge.done { background: #2ecc71; color: #1a1a1a; }
-.status-badge.error { background: #e74c3c; color: white; }
+.status-badge.initializing { background: rgba(255, 255, 255, 0.08); color: var(--text-muted); }
+.status-badge.active       { background: var(--brand-glow); color: var(--brand); }
+.status-badge.paused       { background: rgba(245, 166, 35, 0.12); color: #f5a623; }
+.status-badge.done         { background: rgba(0, 212, 170, 0.12); color: var(--brand); }
+.status-badge.error        { background: rgba(255, 92, 122, 0.12); color: var(--danger); }
 
 @keyframes pulse {
-  0% { opacity: 0.5; }
+  0% { opacity: 0.6; }
   100% { opacity: 1; }
 }
 </style>
