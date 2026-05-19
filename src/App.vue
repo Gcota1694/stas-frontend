@@ -11,6 +11,7 @@
       <nav class="navbar__links">
         <RouterLink to="/" class="nav-link">Inicio</RouterLink>
         <RouterLink to="/transfers" class="nav-link">Transferencias</RouterLink>
+        <RouterLink to="/downloads" class="nav-link">Descargas</RouterLink>
       </nav>
 
       <!-- Botón hamburguesa móvil -->
@@ -25,7 +26,8 @@
     <Transition name="menu">
       <div v-if="menuOpen" class="mobile-menu">
         <RouterLink to="/" class="mobile-link" @click="menuOpen = false">⚡ Inicio</RouterLink>
-        <RouterLink to="/transfers" class="mobile-link" @click="menuOpen = false">📋 Transferencias</RouterLink>
+        <RouterLink to="/transfers" class="mobile-link" @click="menuOpen = false">🔄 Transferencias</RouterLink>
+        <RouterLink to="/downloads" class="mobile-link" @click="menuOpen = false">📋 Descargas</RouterLink>
       </div>
     </Transition>
 

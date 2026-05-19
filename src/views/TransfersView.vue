@@ -3,13 +3,13 @@
 
     <div class="page-header">
       <div>
-        <h1>Transferencias</h1>
-        <p class="page-sub">Historial y estado de todas las transferencias activas</p>
+        <h1>Dashboard de Transferencias</h1>
+        <p class="page-sub">Monitoreo de rendimiento, logs de red y control de flujo STAS</p>
       </div>
       <div class="header-actions">
         <div class="ws-indicator" :class="ws.connected ? 'ws--on' : 'ws--off'">
           <span class="ws-dot"></span>
-          {{ ws.connected ? 'En vivo' : 'Sin conexión' }}
+          {{ ws.connected ? 'Tubería En Vivo' : 'Backend Desconectado' }}
         </div>
         <button class="btn btn--ghost" @click="ws.connected ? ws.disconnect() : ws.connect()">
           {{ ws.connected ? '🔌 Desconectar' : '🔗 Conectar WS' }}
@@ -17,34 +17,36 @@
       </div>
     </div>
 
-    <!-- Stats -->
     <div class="stats-row">
-      <div class="stat-card" v-for="s in stats" :key="s.label">
+      <div class="stat-card" v-for="s in metrics" :key="s.label">
         <span class="stat-num" :style="{ color: s.color }">{{ s.value }}</span>
         <span class="stat-label">{{ s.label }}</span>
       </div>
     </div>
 
-    <!-- Lista vacía -->
-    <div v-if="store.transfers.length === 0" class="empty">
+    <div v-if="allTransfers.length === 0" class="empty">
       <span class="empty-icon">📭</span>
-      <p>No hay transferencias aún</p>
-      <RouterLink to="/" class="btn btn--primary">Subir archivo</RouterLink>
+      <p>No se han registrado operaciones en el buffer local</p>
+      <RouterLink to="/" class="btn btn--primary">Ir al Panel de Carga</RouterLink>
     </div>
 
-    <!-- Lista de transferencias -->
     <div v-else class="transfer-list">
+      <h2 style="margin-bottom: 1rem; font-size: 1.2rem; color: var(--text);">📋 Cola de Procesamiento Actual</h2>
+      
       <TransitionGroup name="list">
         <div
-          v-for="t in [...store.transfers].reverse()"
+          v-for="t in allTransfers"
           :key="t.id"
           class="transfer-row"
         >
           <div class="tr-left">
-            <span class="tr-icon">📄</span>
+            <span class="tr-icon">{{ t.type === 'download' ? '📥' : '📤' }}</span>
             <div class="tr-info">
               <p class="tr-name">{{ t.name }}</p>
-              <p class="tr-meta">{{ formatSize(t.size) }} · {{ t.chunks.length }} bloques</p>
+              <p class="tr-meta">
+                {{ formatSize(t.size || 0) }} · {{ t.chunks?.length || 0 }} bloques · 
+                <span style="font-weight: 500; color: var(--brand);">{{ t.type === 'download' ? 'Descarga' : 'Subida' }}</span>
+              </p>
             </div>
           </div>
 
@@ -59,25 +61,33 @@
             <span class="status-badge" :class="'status--' + t.status">
               {{ labelStatus(t.status) }}
             </span>
-            <button v-if="t.status === 'active'"  class="icon-btn" title="Pausar"   @click="store.pauseTransfer(t.id)">⏸</button>
-            <button v-if="t.status === 'paused'"  class="icon-btn" title="Reanudar" @click="store.resumeTransfer(t.id)">▶</button>
+            
+            <template v-if="t.type === 'download'">
+              <button v-if="t.status === 'active'" class="icon-btn" title="Pausar" @click="store.pauseDownload(t.id)">⏸</button>
+              <button v-if="t.status === 'paused'" class="icon-btn" title="Reanudar" @click="store.resumeDownload(t.id)">▶</button>
+            </template>
+
+            <template v-else>
+              <button v-if="t.status === 'active'" class="icon-btn" title="Pausar" @click="store.pauseTransfer?.(t.id)">⏸</button>
+              <button v-if="t.status === 'paused'" class="icon-btn" title="Reanudar" @click="store.resumeTransfer?.(t.id)">▶</button>
+            </template>
+
             <RouterLink :to="'/transfers/' + t.id" class="icon-btn" title="Ver detalle">🔍</RouterLink>
           </div>
         </div>
       </TransitionGroup>
     </div>
 
-    <!-- Log WebSocket -->
-    <div class="card log-card">
+    <div class="card log-card" style="margin-top: 2rem;">
       <div class="log-header">
-        <h2>Log WebSocket</h2>
-        <button class="btn btn--ghost btn--sm" @click="ws.clearEvents()">Limpiar</button>
+        <h2>Logs Físicos de Comunicación (WebSocket)</h2>
+        <button class="btn btn--ghost btn--sm" @click="ws.clearEvents()">Limpiar Historial</button>
       </div>
       <div class="log-body">
-        <div v-if="ws.events.length === 0" class="log-empty">Sin eventos aún</div>
+        <div v-if="ws.events.length === 0" class="log-empty">Esperando tramas gRPC / señales de control...</div>
         <div v-for="e in ws.events" :key="e.id" class="log-line" :class="'log--' + e.type">
           <span class="log-time">{{ e.time }}</span>
-          <span class="log-type">{{ e.type }}</span>
+          <span class="log-type">[{{ e.type.toUpperCase() }}]</span>
           <span class="log-msg">{{ e.message }}</span>
         </div>
       </div>
@@ -95,14 +105,47 @@ import { useWsStore }       from '../stores/wsStore'
 const store = useTransferStore()
 const ws    = useWsStore()
 
-const stats = computed(() => [
-  { label: 'Total',        value: store.transfers.length,                                    color: 'var(--text)' },
-  { label: 'Activas',      value: store.transfers.filter(t => t.status === 'active').length, color: 'var(--brand)' },
-  { label: 'Completadas',  value: store.transfers.filter(t => t.status === 'done').length,   color: '#00d4aa' },
-  { label: 'Con error',    value: store.transfers.filter(t => t.status === 'error').length,  color: 'var(--danger)' },
-])
+/**
+ * 🔑 INTEGRADOR DEL BUFFER DE DATOS:
+ * Para evitar que las descargas y subidas queden separadas o rompan la UI, 
+ * unificamos tus arrays del store asegurando que lleven el tag de su naturaleza.
+ */
+const allTransfers = computed(() => {
+  // Si en tu store manejas arrays separados como store.downloads o store.uploads,
+  // aquí los inyectamos y unificamos dinámicamente con su tipo correspondiente.
+  const ds = (store.downloads || []).map(d => ({ ...d, type: 'download' }))
+  const us = (store.transfers || []).map(u => ({ ...u, type: 'upload' }))
+  
+  // Retornamos la lista unificada ordenada de la más reciente a la más vieja
+  return [...ds, ...us].reverse()
+})
+
+/**
+ * 📊 GENERADOR DE MÉTRICAS AVANZADAS PARA TESIS
+ * Transforma datos planos en variables analíticas útiles para el reporte escrito.
+ */
+const metrics = computed(() => {
+  const total = allTransfers.value.length
+  const completadas = allTransfers.value.filter(t => t.status === 'done')
+  const activas = allTransfers.value.filter(t => t.status === 'active').length
+  const errores = allTransfers.value.filter(t => t.status === 'error').length
+
+  // 1. Calcular Datos Totales Procesados con éxito
+  const bytesProcesados = completadas.reduce((acc, cur) => acc + (cur.size || 0), 0)
+  
+  // 2. Calcular la Tasa de Éxito del Sistema (Métrica de estabilidad de red para el reporte)
+  const tasaExito = total > 0 ? ((completadas.length / total) * 100).toFixed(0) + '%' : '100%'
+
+  return [
+    { label: 'Operaciones Totales', value: total,                             color: 'var(--text)' },
+    { label: 'Flujos Activos',      value: activas,                           color: 'var(--brand)' },
+    { label: 'Volumen Exitoso',     value: formatSize(bytesProcesados),       color: '#00d4aa' },
+    { label: 'Tasa de Eficiencia',  value: tasaExito,                         color: errores > 0 ? 'var(--danger)' : '#00d4aa' }
+  ]
+})
 
 function formatSize(bytes) {
+  if (!bytes || bytes === 0) return '0 B'
   if (bytes < 1024)      return bytes + ' B'
   if (bytes < 1024 ** 2) return (bytes / 1024).toFixed(1) + ' KB'
   if (bytes < 1024 ** 3) return (bytes / 1024 ** 2).toFixed(1) + ' MB'
@@ -110,7 +153,7 @@ function formatSize(bytes) {
 }
 
 function labelStatus(s) {
-  return { active: '⚡ Activo', paused: '⏸ Pausado', done: '✅ Listo', error: '❌ Error' }[s] ?? s
+  return { active: '⚡ Corriendo', paused: '⏸ Pausado', done: '✅ Completo', error: '❌ Error' }[s] ?? s
 }
 </script>
 

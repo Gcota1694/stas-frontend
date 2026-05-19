@@ -1,20 +1,63 @@
 import axios from 'axios'
 
 const http = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000',
+  // Ajustado al puerto 8000 estándar de FastAPI
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080',
   timeout: 30000
 })
 
 export default {
-  uploadChunk(transferId, chunk) {
+  /**
+   * Envía un fragmento binario al endpoint real de subida
+   */
+  uploadChunk(fileName, chunkBlob, chunkIndex, totalChunks) {
     const form = new FormData()
-    form.append('transferId', transferId)
-    form.append('chunkIndex', chunk.index)
-    form.append('totalChunks', '?') // se llena dinámicamente
-    form.append('file', chunk.blob, `chunk-${chunk.index}`)
-    return http.post('/upload/chunk', form)
+    
+    // Mapeamos los nombres EXACTOS que tus Form(...) de FastAPI esperan recibir
+    form.append('chunk_index', chunkIndex)
+    form.append('total_chunks', totalChunks)
+    form.append('file', chunkBlob, fileName) // Usamos el nombre real del archivo como filename
+    
+    return http.post('/api/v1/files/upload', form, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
   },
+
+  /**
+   * Activa el semáforo de pausa en Redis usando tu ruta real por URL
+   */
+  pauseServerTransfer(fileName) {
+    return http.post(`/api/v1/files/${encodeURIComponent(fileName)}/pause`)
+  },
+
+  /**
+   * Quita el semáforo de pausa en Redis usando tu ruta real por URL
+   */
+  resumeServerTransfer(fileName) {
+    return http.post(`/api/v1/files/${encodeURIComponent(fileName)}/resume`)
+  },
+
   getTransfers() {
-    return http.get('/transfers')
+    return http.get('/api/v1/files') // Ajustado al prefijo por si lo implementas luego
+  },
+
+  // Obtener la lista de archivos disponibles en la carpeta de uploads
+  getAvailableFiles() {
+    return http.get('/api/v1/files') // Asegúrate de que este endpoint en tu back liste los nombres
+  },
+
+  // Obtener la info del archivo (especialmente total_chunks)
+  getFileInfo(fileId) {
+    return http.get(`/api/v1/files/${encodeURIComponent(fileId)}/info`)
+  },
+
+  // Descargar un flujo de streaming desde un chunk específico
+  downloadFileStream(fileId, startChunk = 0) {
+    return http.get(`/api/v1/files/${encodeURIComponent(fileId)}`, {
+      params: { start_chunk: startChunk },
+      responseType: 'blob' // Clave para manejar el flujo binario en el Front
+    })
   }
 }
