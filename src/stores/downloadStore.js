@@ -91,9 +91,11 @@ export const useDownloadStore = defineStore('download', () => {
         const realChunkIdx = Math.floor(download.receivedBytes / CHUNK_SIZE)
         download.currentChunkIndex = realChunkIdx
 
-        if (download.chunks[realChunkIdx]) {
-          download.chunks[realChunkIdx].status = 'done'
-        }
+        for (let i = 0; i <= realChunkIdx; i++) {
+          if (download.chunks[i] && download.chunks[i].status !== 'done') {
+            download.chunks[i].status = 'done'
+          }
+}
 
         download.progress = calcProgress(download.chunks)
       }
