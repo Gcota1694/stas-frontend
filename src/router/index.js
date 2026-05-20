@@ -29,6 +29,12 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/downloads',
+      name: 'downloads',
+      component: () => import('../views/DownloadsView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/transfers/:id',
       name: 'detail',
       component: () => import('../views/DetailView.vue'),

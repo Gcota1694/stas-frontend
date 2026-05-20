@@ -11,6 +11,7 @@
       <nav class="navbar__links">
         <RouterLink to="/" class="nav-link">Inicio</RouterLink>
         <RouterLink to="/transfers" class="nav-link">Transferencias</RouterLink>
+        <RouterLink to="/downloads" class="nav-link">Descargas</RouterLink>
         <button v-if="auth.isLoggedIn" class="btn-logout" @click="handleLogout">
           Salir
         </button>
