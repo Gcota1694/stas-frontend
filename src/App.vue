@@ -11,6 +11,9 @@
       <nav class="navbar__links">
         <RouterLink to="/" class="nav-link">Inicio</RouterLink>
         <RouterLink to="/transfers" class="nav-link">Transferencias</RouterLink>
+        <button v-if="auth.isLoggedIn" class="btn-logout" @click="handleLogout">
+          Salir
+        </button>
       </nav>
 
       <!-- Botón hamburguesa móvil -->
@@ -26,6 +29,9 @@
       <div v-if="menuOpen" class="mobile-menu">
         <RouterLink to="/" class="mobile-link" @click="menuOpen = false">⚡ Inicio</RouterLink>
         <RouterLink to="/transfers" class="mobile-link" @click="menuOpen = false">📋 Transferencias</RouterLink>
+        <button v-if="auth.isLoggedIn" class="mobile-logout" @click="handleLogout">
+          🚪 Cerrar sesión
+        </button>
       </div>
     </Transition>
 
@@ -43,10 +49,19 @@
 
 <script setup>
 import { ref } from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { useAuthStore } from './stores/authStore'
 import ToastContainer from './components/ToastContainer.vue'
 
 const menuOpen = ref(false)
+const auth     = useAuthStore()
+const router   = useRouter()
+
+async function handleLogout() {
+  menuOpen.value = false
+  await auth.logout()
+  router.push('/auth')
+}
 </script>
 
 <style>
@@ -134,8 +149,11 @@ h2 { font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 600; }
   letter-spacing: 1px;
 }
 
-/* Desktop links */
-.navbar__links { display: flex; gap: 4px; }
+.navbar__links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 
 .nav-link {
   color: var(--text-muted);
@@ -156,6 +174,23 @@ h2 { font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 600; }
   color: var(--brand);
   background: var(--brand-glow);
   border-color: rgba(0,212,170,0.2);
+}
+
+.btn-logout {
+  background: rgba(255,92,122,0.08);
+  border: 1px solid rgba(255,92,122,0.2);
+  color: var(--danger);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-left: 8px;
+}
+.btn-logout:hover {
+  background: rgba(255,92,122,0.18);
+  border-color: rgba(255,92,122,0.4);
 }
 
 /* ── Hamburguesa ── */
@@ -179,7 +214,7 @@ h2 { font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 600; }
   transition: all 0.25s;
   transform-origin: center;
 }
-.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); background: var(--brand); }
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg);  background: var(--brand); }
 .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); background: var(--brand); }
 
@@ -211,6 +246,22 @@ h2 { font-size: clamp(1rem, 2vw, 1.3rem); font-weight: 600; }
   color: var(--brand);
   background: var(--brand-glow);
   border-color: rgba(0,212,170,0.2);
+}
+.mobile-logout {
+  background: rgba(255,92,122,0.08);
+  border: 1px solid rgba(255,92,122,0.15);
+  color: var(--danger);
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  margin-top: 4px;
+}
+.mobile-logout:hover {
+  background: rgba(255,92,122,0.15);
 }
 
 /* Animación menú */
